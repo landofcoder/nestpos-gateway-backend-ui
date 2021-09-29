@@ -1,0 +1,32 @@
+version: "3"
+services:
+  node-webui:
+    container_name: nestpos_webui_dev
+    build:
+      context: ../../src/dashboard
+      dockerfile: ../../env/development/node/Dockerfile
+    stdin_open: true
+    labels:
+      - "traefik.enable=true"
+      - traefik.http.routers.webui.rule=Host(`dashboard.nestpos.localhost`)
+      - "traefik.http.routers.webui.entrypoints=web"
+      - traefik.http.services.webui.loadbalancer.server.port=3000
+      - traefik.docker.network=proxy
+    ports:
+      - 3000
+    volumes:
+      - ../../src/dashboard:/app
+      - /app/node_modules
+    command: bash -c "yarn && yarn start"
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external:
+      name: proxy
+  internal:
+    driver: bridge

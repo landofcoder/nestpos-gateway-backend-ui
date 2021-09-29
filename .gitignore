@@ -1,0 +1,6 @@
+.idea
+data
+src/node_modules
+src/dist
+src/.env
+/src/dashboard/config/local.js
